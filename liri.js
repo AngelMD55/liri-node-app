@@ -1,13 +1,12 @@
 
 
 const spotify = require("./keys.js");
-// console.log(spotify)
+const Spotify = require('node-spotify-api');
+const axios = require('axios');
+const fs = require("fs");
 
 const spotifyId = process.env.SPOTIFY_ID;
-// console.log(spotifyId);
-
 const spotifySecret = process.env.SPOTIFY_SECRET;
-// console.log(spotifySecret);
 
 let [node, file, command, ...args] = process.argv;
 
@@ -21,17 +20,16 @@ if (command == 'spotify-this-song') {
     console.log("not a given command")
 }
 
-function spotifyThisSong() {
-    let search;
-    if (args == ""){
-    search = 'The Sign Ace of Base'
-    // console.log("28 " + songName)
-    }else {
-    search = args.join(' ');
-    //  console.log('31 ' + songName)
+function spotifyThisSong(search) {
+    if (!search) {
+        if (args == "") {
+            search = 'The Sign Ace of Base'
+            // console.log("28 " + songName)
+        } else {
+            search = args.join(' ');
+            //  console.log('31 ' + songName)
+        }
     }
-    
-    const Spotify = require('node-spotify-api');
 
     const spotify = new Spotify({
         id: spotifyId,
@@ -58,19 +56,19 @@ function spotifyThisSong() {
         .catch(function (err) {
             console.log(err);
         });
+
 }
 
-function movieThis() {
-    const axios = require('axios');
-    let movieName;
-    if (args == ""){
-    movieName = 'Mr. Nobody'
-    }else {
-    movieName = args.join('+');
-    }
+function movieThis(search) {
     
-
-    let queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+    if (!search) {
+        if (args == "") {
+            search = 'Mr. Nobody'
+        } else {
+            search = args.join('+');
+        }
+    }
+    let queryUrl = "http://www.omdbapi.com/?t=" + search + "&y=&plot=short&apikey=trilogy";
 
     axios.get(queryUrl).then(
         function (response) {
@@ -94,8 +92,7 @@ function movieThis() {
 }
 
 function doWhatItSays() {
-    const fs = require("fs");
-
+    
     fs.readFile("random.txt", "utf8", function (error, data) {
         if (error) {
             return console.log(error);
@@ -108,8 +105,8 @@ function doWhatItSays() {
         // console.log(dataCommand[1])
         command = dataCommand[0]
         search = dataCommand[1]
-        console.log(search);
-        
+        // console.log(search);
+
 
         if (command == 'spotify-this-song') {
             spotifyThisSong(search)
